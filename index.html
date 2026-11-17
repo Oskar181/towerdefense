@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#10151d">
+<title>[NAZWA GRY] – Tower Defense</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 35 9v11c0 9-7 15-15 17C12 35 5 29 5 20V9z" fill="#f2b544" stroke="#7a5510" stroke-width="2.5" stroke-linejoin="round"/><path d="M14 13v4h3v-4h6v4h3v-4" stroke="#4a3200" stroke-width="2.5" fill="none" stroke-linejoin="round"/><rect x="14" y="17" width="12" height="11" fill="#4a3200"/></svg>
+      <div class="brand-text">
+        <span class="title">[NAZWA GRY]</span>
+        <span class="sub" id="mapName">Mapa</span>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="chip" title="Złoto">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#f2b544" stroke="#7a5510" stroke-width="2"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#9c6b10" stroke-width="1.6"/><path d="M7 8 a6 6 0 0 1 5 -3" stroke="#fff3c4" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+        <b id="gold">0</b><span class="lbl">złoto</span>
+      </div>
+      <div class="chip" title="Życia bazy">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z" fill="#e5605a" stroke="#7a2420" stroke-width="1.8" stroke-linejoin="round"/><path d="M7.5 8.5 a2.5 2.5 0 0 1 2.5 -2" stroke="#ffc2bd" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+        <b id="lives">0</b><span class="lbl">życia</span>
+      </div>
+      <div class="chip" title="Fala">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4" stroke="#c9d3e3" stroke-width="2" stroke-linecap="round"/><path d="M6 4h11l-2.5 4 2.5 4H6z" fill="#e5605a" stroke="#7a2420" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <b id="waveNum">0/30</b><span class="lbl">fala</span>
+        <span class="minibar"><span id="waveBar"></span></span>
+      </div>
+    </div>
+    <div class="top-right">
+      <span class="phase" id="phase"><span class="dot"></span><span id="phaseText">Przygotowanie</span></span>
+      <button type="button" class="icon-btn" id="btnSound" aria-label="Wycisz dźwięk">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor" fill-opacity="0.15"/><path class="snd-on" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="snd-off" d="M16 9l5 6M21 9l-5 6"/></svg>
+      </button>
+      <button type="button" class="icon-btn" id="btnMusic" aria-label="Wyłącz muzykę">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor" fill-opacity="0.2"/><circle cx="16.5" cy="16" r="2.5" fill="currentColor" fill-opacity="0.2"/><path class="mus-off" d="M4 4l16 16"/></svg>
+      </button>
+      <button type="button" class="icon-btn" id="btnHelp" aria-label="Jak grać">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.6v.4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg>
+      </button>
+      <button type="button" class="icon-btn" id="btnMenu" aria-label="Menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="board" id="board">
+      <canvas id="cv" aria-label="Plansza gry"></canvas>
+      <div class="map-tools">
+        <button type="button" class="icon-btn glass" id="zoomIn" aria-label="Przybliż"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 6v12M6 12h12"/></svg></button>
+        <button type="button" class="icon-btn glass" id="zoomOut" aria-label="Oddal"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12"/></svg></button>
+      </div>
+      <div class="boss-bar" id="bossBar" hidden>
+        <span class="boss-ico" id="bossIco"></span>
+        <div class="boss-main"><div class="boss-name"><b id="bossName">Boss</b><span id="bossDesc"></span></div><div class="boss-hp"><span id="bossHp"></span></div></div>
+      </div>
+      <div class="powers" id="powers" role="group" aria-label="Moce bogów"></div>
+      <div class="board-hint" id="boardHint"></div>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+      <div class="modal-wrap" id="modal" hidden>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+          <h2 id="modalTitle"></h2>
+          <div id="modalBody"></div>
+          <div class="modal-actions" id="modalActions"></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel" id="panel">
+      <section class="card">
+        <h2 class="sec">Budowa</h2>
+        <div class="build-grid" id="buildGrid"></div>
+        <button type="button" class="grod-btn" id="btnGrod" aria-pressed="false"><span class="grod-ico"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 30 L4 18 L8 14 L12 18 L12 30 M28 30 V12 L32 6 L36 12 V30" fill="#c2332b" stroke="#1e140c" stroke-width="2" stroke-linejoin="round"/><path d="M2 30 Q20 22 38 30 L38 36 H2 Z" fill="#8a7444" stroke="#1e140c" stroke-width="2"/><path d="M6 30 V22 M10 30 V21 M14 30 V20 M18 30 V20 M22 30 V20 M26 30 V21 M30 30 V22 M34 30 V22" stroke="#a87447" stroke-width="2.6"/><path d="M15 20 L20 12 L25 20 Z" fill="#e8c878" stroke="#1e140c" stroke-width="1.6"/></svg></span><span class="grod-txt"><b id="grodLvl">Gród</b><small id="grodNext"></small></span><span class="chev">›</span></button>
+      </section>
+      <section class="card info" id="info"></section>
+      <section class="card" id="waveCard"></section>
+      <div class="controls">
+        <div class="row">
+                    <div class="seg" role="group" aria-label="Prędkość gry" id="speedSeg">
+            <button type="button" data-speed="1">x1</button>
+            <button type="button" data-speed="2">x2</button>
+            <button type="button" data-speed="3">x3</button>
+          </div>
+          <button type="button" class="auto-btn" id="btnAuto" aria-pressed="false" title="Automatycznie startuj kolejne fale">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></svg>
+            <span>Auto</span>
+          </button>
+          <button type="button" class="icon-btn" id="btnPause" aria-label="Pauza">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.5" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1.5" fill="currentColor"/></svg>
+          </button>
+        </div>
+
+        <button type="button" class="btn-gold big" id="btnWave">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>
+          <span id="btnWaveText">Następna fala</span>
+        </button>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<script src="js/art.js"></script>
+<script src="js/art_slavic.js"></script>
+<script src="js/map.js"></script>
+<script src="js/game.js"></script>
+<script src="js/render.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
